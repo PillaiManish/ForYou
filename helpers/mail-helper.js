@@ -13,15 +13,15 @@ let transporter = nodemailer.createTransport({
 });
 
 let sendMails = {
-    sendEmailOTP : (data) => {
+    sendEmailOTP : (email, OTP) => {
         return new Promise(async(resolve, reject)=>{
             try{
                 await transporter.sendMail({
                     from: constants.email.emailId,
-                    to: data.userEmail,
-                    subject: "OTP For Verification",
-                    text: data.OTP,
-                    html: data.OTP
+                    to: email,
+                    subject: constants.emailSubject.sendEmailOTP,
+                    text: OTP,
+                    html: OTP
                 })
 
                 logHelpers.info("Email has been sent")

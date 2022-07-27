@@ -9,7 +9,7 @@ let login = (req, res) => {
 
 let registerApi = async (req, res)=> {
     try{
-        await register(req.body.email, req.body.name)
+        await register(req.body.name, req.body.email)
     }
 
     catch (err){

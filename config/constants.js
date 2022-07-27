@@ -25,6 +25,9 @@ const constants = {
         emailPort: process.env.EMAIL_PORT,
         emailSecure:process.env.EMAIL_SECURE
     },
+    emailSubject:{
+        sendEmailOTP: "Important: OTP for Registration"
+    },
     mailTypes: {
         sendEmailOTP: 'sendEmailOTP',
     },
