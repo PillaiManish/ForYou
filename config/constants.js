@@ -32,7 +32,7 @@ const constants = {
         sendEmailOTP: 'sendEmailOTP',
     },
     redisKeys: {
-
+        userDetails: 'foryou:user_details:',
     },
 
 };
