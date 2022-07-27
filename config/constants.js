@@ -20,7 +20,10 @@ const constants = {
     },
     email: {
         emailId: process.env.EMAIL_ID,
-        emailPassword: process.env.EMAIL_PASSWORD
+        emailPassword: process.env.EMAIL_PASSWORD,
+        emailHost: process.env.EMAIL_HOST,
+        emailPort: process.env.EMAIL_PORT,
+        emailSecure:process.env.EMAIL_SECURE
     },
     mailTypes: {
         sendEmailOTP: 'sendEmailOTP',
