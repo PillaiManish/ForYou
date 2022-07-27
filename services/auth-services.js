@@ -5,7 +5,7 @@ let mails = require('../helpers/mail-helper').sendMails
 let totp = require("totp-generator");
 let base32 = require('base-32')
 
-let register = (name, email)=>{
+let authentication = (name, email)=>{
     return new Promise(async(resolve, reject)=>{
         let query = "INSERT INTO USERS (name, email) VALUES($1,$2)";
         let dataArray = [name, email];
@@ -34,5 +34,5 @@ let register = (name, email)=>{
 }
 
 module.exports = {
-    register
+    authentication
 }

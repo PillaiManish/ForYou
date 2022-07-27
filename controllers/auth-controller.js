@@ -1,33 +1,28 @@
 let logHelpers = require('../helpers/log-helper')
 let dbHelpers = require('../helpers/db-helper')
 let crypto = require('crypto'); 
-let {register} = require('../services/auth-services')
+let {authentication} = require('../services/auth-services')
 
-let login = (req, res) => {
-
-}
-
-let registerApi = async (req, res)=> {
+let authenticationAPI = async (req, res)=> {
     try{
-        await register(req.body.name, req.body.email)
+        await authentication(req.body.name, req.body.email)
     }
 
     catch (err){
         return res.send({
             success:false,
-            message:"User registration failed."
+            message:"User authentication failed."
         })
     }
 
-    logHelpers.info("Successfully Registered")
+    logHelpers.info("Successfully Authenticated")
     
     res.send({
         success:true,
-        message:"User has been registered Successfully"
+        message:"User has been authenticated Successfully"
     })
 }
 
 module.exports = {
-    login,
-    registerApi
+    authenticationAPI,
 }
