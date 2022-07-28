@@ -1,7 +1,7 @@
 let logHelpers = require('../helpers/log-helper')
 let dbHelpers = require('../helpers/db-helper')
 let crypto = require('crypto'); 
-let mails = require('../helpers/mail-helper').sendMails
+let mails = require('../helpers/mail-queue-helper')
 let totp = require("totp-generator");
 let base32 = require('base-32')
 let redisHelper = require('../helpers/redis-helper')
@@ -14,7 +14,7 @@ let sendOTP = (email)=>{
         let OTP = totp(emailBase32, {period: 270});
 
         try{
-            result = await mails.sendEmailOTP(email,OTP) 
+            await mails.pushMailQueue(constants.mailTypes.sendEmailOTP, {email: email, OTP: OTP})
         }
         catch(err){
             return reject({error:err, message: "Could not send the OTP."})
