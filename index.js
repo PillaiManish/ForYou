@@ -22,6 +22,10 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 let authRouters = require('./routers/auth-routers')
 app.use('/auth',authRouters)
 
+
+let journalRouters = require('./routers/journal-routers')
+app.use('/journal',journalRouters)
+
 app.listen(3000, ()=>{
     logHelpers.log("Listening to PORT 3000")
 })
