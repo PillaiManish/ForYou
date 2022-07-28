@@ -4,20 +4,12 @@ let crypto = require('crypto');
 let mails = require('../helpers/mail-helper').sendMails
 let totp = require("totp-generator");
 let base32 = require('base-32')
+let redisHelper = require('../helpers/redis-helper')
+let constants = require('../config/constants')
+let commonHelpers = require('../helpers/common-helper')
 
-let authentication = (name, email)=>{
+let sendOTP = (email)=>{
     return new Promise(async(resolve, reject)=>{
-        let query = "INSERT INTO USERS (name, email) VALUES($1,$2)";
-        let dataArray = [name, email];
-        let result;
-
-        try{
-            result = await dbHelpers.runQuery(query, dataArray);
-        }
-        catch(err){
-            return reject({error:err, message: "Could not save the data."})
-        }
-
         let emailBase32 = base32.default.encode(email);
         let OTP = totp(emailBase32, {period: 270});
 
@@ -28,11 +20,56 @@ let authentication = (name, email)=>{
             return reject({error:err, message: "Could not send the OTP."})
         }
 
-
         return resolve(true);
     })
 }
 
+let authenticateOTP = (data)=>{
+    return new Promise(async (resolve, reject)=>{
+        let emailBase32 = base32.default.encode(data.email);
+        let OTP = totp(emailBase32, {period: 270});
+
+        if (OTP != data.OTP){
+            return reject({error:new Error('Incorrect OTP'), message: "Incorrect OTP."})
+        }
+        
+        let isUserRegistered;
+        let key = constants.redisKeys.userDetails + data.email
+
+        try{
+            isUserRegistered = await redisHelper.getDataFromRedisKey(key)
+        }
+        catch(err){
+            logHelpers.error(err)
+        }
+
+        if (isUserRegistered != null){
+            return resolve(true)
+        }
+        
+        let query = "INSERT INTO USERS (id,email) VALUES($1, $2)";
+        let dataArray = [commonHelpers.generateUuid(),data.email];
+        let result;
+
+        try{
+            result = await dbHelpers.runQuery(query, dataArray);
+        }
+        catch(err){
+            return reject({error:err, message: "Could not save the data."})
+        }
+
+        try{
+            await redisHelper.setDataToRedisKey(key, {name: 'Guest'})
+        }
+        catch(err){
+            logHelpers.error(err)
+        }
+
+        return resolve(true)
+    })
+}
+
 module.exports = {
-    authentication
+    sendOTP,
+    authenticateOTP
 }
