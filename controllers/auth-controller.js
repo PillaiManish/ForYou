@@ -1,6 +1,4 @@
 let logHelpers = require('../helpers/log-helper')
-let dbHelpers = require('../helpers/db-helper')
-let crypto = require('crypto'); 
 let {sendOTP, authenticateOTP} = require('../services/auth-services')
 
 let sendOTPAPI = async (req, res)=> {
