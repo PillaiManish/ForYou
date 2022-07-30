@@ -33,7 +33,31 @@ let addJournal = (data) => {
 
         logHelpers.info("New Journal Added")
 
-        
+        let key = constants.redisKeys.userBlogList + token.uuid
+
+        try{
+            isKeyPresent = await redisHelper.getDataFromRedisKey(key)
+        }
+        catch(err){
+            logHelpers.error(err)
+        }
+
+        let list;
+        if (isKeyPresent != null){
+            list = JSON.parse(isKeyPresent)
+            list.push(uuid)
+        }
+        else{
+            list = [uuid]
+        }
+
+        try{
+            await redisHelper.setDataToRedisKey(key, list)
+        }
+        catch(err){
+            logHelpers.error(err)
+        }
+
         return resolve(true)
     })
 
