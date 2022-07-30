@@ -1,6 +1,5 @@
 let logHelpers = require('../helpers/log-helper')
 let dbHelpers = require('../helpers/db-helper')
-let crypto = require('crypto'); 
 let mails = require('../helpers/mail-queue-helper')
 let totp = require("totp-generator");
 let base32 = require('base-32')

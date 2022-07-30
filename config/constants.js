@@ -33,6 +33,7 @@ const constants = {
     },
     redisKeys: {
         userDetails: 'foryou:user_details:',
+        userBlogList: 'foryou:user_blog_list:'
     },
 
     JWT:{

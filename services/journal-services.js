@@ -1,8 +1,27 @@
+let dbHelpers = require('../helpers/db-helper')
+let crypto = require('crypto'); 
+let totp = require("totp-generator");
+let base32 = require('base-32')
+let redisHelper = require('../helpers/redis-helper')
+let constants = require('../config/constants')
+let commonHelpers = require('../helpers/common-helper')
+let jsonwebtoken = require('jsonwebtoken');
+const logHelpers = require('../helpers/log-helper');
 
-let addJournal = () => {
+let addJournal = (data) => {
     new Promise(async(resolve, reject)=>{
-        let query = "INSERT INTO JOURNALS (id, user_id, ) VALUES($1, $2)";
-        let dataArray = [commonHelpers.generateUuid(),data.email];
+        let token = null
+        
+        try{
+            token = jsonwebtoken.verify(data.jwt, constants.JWT.JWT_SECRET_KEY)
+        }
+        catch (err){
+            return reject({error:err, message: "Invalid JWT"})
+        }
+
+        let uuid = commonHelpers.generateUuid()
+        let query = "INSERT INTO JOURNALS (id, user_id, content) VALUES($1, $2, $3)";
+        let dataArray = [uuid, token.uuid, data.content];
         let result;
 
         try{
@@ -12,6 +31,9 @@ let addJournal = () => {
             return reject({error:err, message: "Could not save the data."})
         }
 
+        logHelpers.info("New Journal Added")
+
+        
         return resolve(true)
     })
 
