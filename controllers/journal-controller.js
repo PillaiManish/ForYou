@@ -3,7 +3,7 @@ let logHelpers = require('../helpers/log-helper')
 
 let addJournalApi = async(req, res) => {
     try{
-        await addJournal()
+        await addJournal({content:req.body.content, jwt:req.headers.authorization})
     }
 
     catch(err){
