@@ -100,7 +100,14 @@ let viewJournal = (data) => {
 
 }
 
+let viewSingleJournal = (data)=>{
+    return new Promise((resolve, reject)=>{
+
+    })
+}
+
 module.exports = {
     addJournal,
-    viewJournal
+    viewJournal,
+    viewSingleJournal
 }

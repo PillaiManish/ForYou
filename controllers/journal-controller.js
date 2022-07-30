@@ -1,4 +1,4 @@
-let {addJournal,viewJournal} = require('../services/journal-services')
+let {addJournal,viewJournal, viewSingleJournal} = require('../services/journal-services')
 let logHelpers = require('../helpers/log-helper')
 
 let addJournalApi = async (req, res) => {
@@ -38,10 +38,21 @@ let viewJournalApi = async (req, res) => {
         data:data,
         message:"Journals viewed successfully"
     })
+}
 
+let viewSingleJournalApi = async(req, res)=>{
+    let data
+    try{
+        data = await viewSingleJournal()
+    }
+
+    catch(err){
+
+    }
 }
 
 module.exports = {
     addJournalApi,
-    viewJournalApi
+    viewJournalApi,
+    viewSingleJournalApi
 }
