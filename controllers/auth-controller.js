@@ -22,8 +22,9 @@ let sendOTPAPI = async (req, res)=> {
 }
 
 let authenticateOTPApi = async (req, res) => {
+    let data = null
     try {
-        await authenticateOTP({email:req.body.email, OTP:req.body.OTP})
+        data = await authenticateOTP({email:req.body.email, OTP:req.body.OTP})
     }
     catch(err){
         return res.send({
@@ -36,6 +37,7 @@ let authenticateOTPApi = async (req, res) => {
 
     res.send({
         success:true,
+        data: data,
         message:"OTP authenticated successfully"
     })
 }
