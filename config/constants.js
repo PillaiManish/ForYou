@@ -35,7 +35,9 @@ const constants = {
         userDetails: 'foryou:user_details:',
         userBlogList: 'foryou:user_blog_list:'
     },
-
+    redisQueue:{
+        setKeyData : 'setDataToRedisKey'
+    },
     JWT:{
         JWT_SECRET_KEY: process.env.JWT_SECRET_KEY
     }

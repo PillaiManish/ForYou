@@ -4,6 +4,7 @@ let constants = require('../config/constants')
 let commonHelpers = require('../helpers/common-helper')
 let jsonwebtoken = require('jsonwebtoken');
 const logHelpers = require('../helpers/log-helper');
+let redis = require('../helpers/redis-queue-helper')
 
 let addJournal = (data) => {
     return new Promise(async(resolve, reject)=>{
@@ -28,8 +29,6 @@ let addJournal = (data) => {
             return reject({error:err, message: "Could not save the data."})
         }
 
-        logHelpers.info("New Journal Added")
-
         let key = constants.redisKeys.userBlogList + token.uuid
 
         try{
@@ -49,7 +48,7 @@ let addJournal = (data) => {
         }
 
         try{
-            await redisHelper.setDataToRedisKey(key, list)
+            await redis.pushRedisQueue(constants.redisQueue.setKeyData, key, list)
         }
         catch(err){
             logHelpers.error(err)
