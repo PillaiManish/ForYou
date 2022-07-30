@@ -1,7 +1,4 @@
 let dbHelpers = require('../helpers/db-helper')
-let crypto = require('crypto'); 
-let totp = require("totp-generator");
-let base32 = require('base-32')
 let redisHelper = require('../helpers/redis-helper')
 let constants = require('../config/constants')
 let commonHelpers = require('../helpers/common-helper')
@@ -9,7 +6,7 @@ let jsonwebtoken = require('jsonwebtoken');
 const logHelpers = require('../helpers/log-helper');
 
 let addJournal = (data) => {
-    new Promise(async(resolve, reject)=>{
+    return new Promise(async(resolve, reject)=>{
         let token = null
         
         try{
@@ -20,7 +17,7 @@ let addJournal = (data) => {
         }
 
         let uuid = commonHelpers.generateUuid()
-        let query = "INSERT INTO JOURNALS (id, user_id, content) VALUES($1, $2, $3)";
+        let query = "INSERT INTO JOURNALS (id, user_id, content) VALUES($1, $2, $3) RETURNING *";
         let dataArray = [uuid, token.uuid, data.content];
         let result;
 
@@ -45,10 +42,10 @@ let addJournal = (data) => {
         let list;
         if (isKeyPresent != null){
             list = JSON.parse(isKeyPresent)
-            list.push(uuid)
+            list.push(result.rows[0])
         }
         else{
-            list = [uuid]
+            list = result.rows
         }
 
         try{
@@ -63,9 +60,43 @@ let addJournal = (data) => {
 
 }
 
-let viewJournal = () => {
-    new Promise(async(resolve, reject)=>{
-        resolve(true)
+let viewJournal = (data) => {
+    return new Promise(async(resolve, reject)=>{
+        let token = null
+        let result = null
+        
+        try{
+            token = jsonwebtoken.verify(data.jwt, constants.JWT.JWT_SECRET_KEY)
+        }
+        catch (err){
+            return reject({error:err, message: "Invalid JWT"})
+        }
+
+
+        let key = constants.redisKeys.userBlogList + token.uuid
+
+        try{
+            isKeyPresent = await redisHelper.getDataFromRedisKey(key)
+        }
+        catch(err){
+            logHelpers.error(err)
+        }
+
+        if (isKeyPresent != null){
+            return resolve({journals: JSON.parse(isKeyPresent)})
+        }
+
+        let query = "SELECT * FROM JOURNALS where user_id=$1";
+        let dataArray = [token.uuid];
+
+        try{
+            result = await dbHelpers.runQuery(query, dataArray);
+        }
+        catch(err){
+            return reject({error:err, message: "Could not collect the data."})
+        }
+
+        return resolve({journals: result.rows})
     })
 
 }
