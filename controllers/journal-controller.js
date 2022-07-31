@@ -43,12 +43,23 @@ let viewJournalApi = async (req, res) => {
 let viewSingleJournalApi = async(req, res)=>{
     let data
     try{
-        data = await viewSingleJournal()
+        data = await viewSingleJournal({jwt:req.headers.authorization, journalUUID: req.body.journalUUID})
     }
 
     catch(err){
-
+        return res.send({
+            success:false,
+            message:"Failed to get Journal."
+        })
     }
+
+    logHelpers.info("Journals viewed successfully")
+
+    res.send({
+        success:true,
+        data:data,
+        message:"Journal viewed successfully"
+    })
 }
 
 module.exports = {

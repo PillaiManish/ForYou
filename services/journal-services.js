@@ -102,6 +102,28 @@ let viewJournal = (data) => {
 
 let viewSingleJournal = (data)=>{
     return new Promise((resolve, reject)=>{
+        let token = null
+        let result = null
+        
+        try{
+            token = jsonwebtoken.verify(data.jwt, constants.JWT.JWT_SECRET_KEY)
+        }
+        catch (err){
+            return reject({error:err, message: "Invalid JWT"})
+        }
+
+        let query = "SELECT * FROM JOURNALS WHERE id=$1";
+        let dataArray = [data.journalUUID];
+
+        try{
+            result = await dbHelpers.runQuery(query, dataArray);
+        }
+        catch(err){
+            return reject({error:err, message: "Could not get the data."})
+        }
+
+        return resolve({journal: result.rows[0]})
+
 
     })
 }
