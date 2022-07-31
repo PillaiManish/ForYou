@@ -105,6 +105,7 @@ let viewSingleJournal = (data)=>{
         let token = null
         let result = null
         
+        console.log(data.journalUUID)
         try{
             token = jsonwebtoken.verify(data.jwt, constants.JWT.JWT_SECRET_KEY)
         }

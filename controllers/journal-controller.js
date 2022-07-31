@@ -43,7 +43,7 @@ let viewJournalApi = async (req, res) => {
 let viewSingleJournalApi = async(req, res)=>{
     let data
     try{
-        data = await viewSingleJournal({jwt:req.headers.authorization, journalUUID: req.body.journalUUID})
+        data = await viewSingleJournal({jwt:req.headers.authorization, journalUUID: req.params.uuid})
     }
 
     catch(err){
