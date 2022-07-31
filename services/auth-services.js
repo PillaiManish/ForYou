@@ -7,6 +7,7 @@ let redisHelper = require('../helpers/redis-helper')
 let constants = require('../config/constants')
 let commonHelpers = require('../helpers/common-helper')
 let jsonwebtoken = require('jsonwebtoken')
+let redis = require('../helpers/redis-queue-helper')
 
 let sendOTP = (email)=>{
     return new Promise(async(resolve, reject)=>{
@@ -66,7 +67,7 @@ let authenticateOTP = (data)=>{
         }
 
         try{
-            await redisHelper.setDataToRedisKey(key, uuid)
+            await redis.pushRedisQueue(constants.redisQueue.setKeyData, key, uuid)
         }
         catch(err){
             logHelpers.error(err)

@@ -101,7 +101,7 @@ let viewJournal = (data) => {
 }
 
 let viewSingleJournal = (data)=>{
-    return new Promise((resolve, reject)=>{
+    return new Promise(async(resolve, reject)=>{
         let token = null
         let result = null
         
